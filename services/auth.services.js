@@ -41,7 +41,7 @@ export const sendResetCode = async (email) => {
   }
 
   const code = generateRandomCode();
-  const resetLink = `${process.env.url}/reset-password?code=${code}`;
+  const resetLink = `${process.env.url}/reset-password`;
 
   // Store code and expiry in User document
   try {
@@ -94,11 +94,19 @@ export const handleRegister = async ({ username, email, password }) => {
     };
   }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
+  const emailExists = await User.findOne({ email });
+  if (emailExists) {
     return {
       status: 400,
-      data: { message: 'User already exists' },
+      data: { message: 'Email already exists' },
+    };
+  }
+
+  const usernameExists = await User.findOne({ username });
+  if (usernameExists) {
+    return {
+      status: 400,
+      data: { message: 'Username already exists' },
     };
   }
 
